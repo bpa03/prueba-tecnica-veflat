@@ -28,7 +28,7 @@ class RickAndMortyApi {
   }
 
   async searchCharacters(search: string) {
-    const formattedUrl = `${this.apiUrl}/${this.charantersUri}?name=${search}`;
+    const formattedUrl = `${this.apiUrl}/${this.charantersUri}?${search}`;
     const response = await fetch(formattedUrl);
     const data = await response.json();
 
