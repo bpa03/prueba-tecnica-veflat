@@ -1,15 +1,32 @@
+import { useState } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import RickAndMortyApi from '../services/RickAndMortyApi';
-import { AllCharactersResponse } from '../services/interfaces';
+import { CharactersResponse } from '../services/interfaces';
 import CharacterList from '../components/CharacterList';
 
 interface HomePageProps {
-  data: AllCharactersResponse;
+  data: CharactersResponse;
 }
 
 const Home: NextPage<HomePageProps> = ({ data }) => {
-  const { results } = data;
+  const [characters, setCharacters] = useState(data.results);
+  const [page, setPage] = useState<number>(2);
+  const [loading, setLoading] = useState(false);
+
+  const handleRefetch = () => {
+    if (loading) return;
+
+    setLoading(true);
+    RickAndMortyApi.getCharactersFromPage(page).then((data) => {
+      if (data.results) {
+        setPage(page + 1);
+        setCharacters([...characters, ...data.results]);
+      }
+
+      setLoading(false);
+    });
+  };
 
   return (
     <>
@@ -18,7 +35,12 @@ const Home: NextPage<HomePageProps> = ({ data }) => {
       </Head>
       <h1>Rick and Morty App</h1>
       <div className="mt-6">
-        <CharacterList characters={results} />
+        <CharacterList characters={characters} />
+        {!loading ? (
+          <button onClick={handleRefetch} className="mt-8">
+            Load more
+          </button>
+        ) : null}
       </div>
     </>
   );
