@@ -1,7 +1,18 @@
-export interface AllCharactersResponse {
+export interface CharactersResponse {
   info: Info;
   results: Character[];
 }
+
+export interface LocationResponse {
+  id:        number;
+  name:      string;
+  type:      string;
+  dimension: string;
+  residents: string[];
+  url:       string;
+  created:   Date;
+}
+
 
 export interface Info {
   count: number;
