@@ -1,42 +1,25 @@
 import { NextPage } from 'next';
-import { useState, ChangeEvent, FormEvent } from 'react';
+import Head from 'next/head';
 import CharacterList from '../components/CharacterList';
-import { CharactersResponse } from '../services/interfaces';
 import Container from '../components/ui/Container';
 import RickAndMortyApi from '../services/RickAndMortyApi';
-import Input from '../components/ui/Input';
-import Select from '../components/ui/Select';
 import Button from '../components/ui/Button';
-
-interface FormValues {
-  name: string;
-  status: 'alive' | 'dead' | 'unknown' | '';
-}
+import usePagination from '../hooks/usePagination';
+import SearchForm from '../components/SearchForm';
+import Badges from '../components/ui/Badges';
+import Link from '../components/ui/Link';
 
 const Search: NextPage = () => {
-  const [next, setNext] = useState<string>('');
-  const [characters, setCharacters] = useState<CharactersResponse | null>(
-    null
-  );
-  const [values, setValues] = useState<FormValues>({
-    name: '',
-    status: '',
-  });
+  const {
+    handleNextPage,
+    isLoading,
+    setData,
+    characters,
+    existNextPage,
+    info,
+  } = usePagination();
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    console.log({ name, value });
-    setValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmit = (values: { name: string; status: string }) => {
     let format = '';
     const { name, status } = values;
 
@@ -54,72 +37,49 @@ const Search: NextPage = () => {
 
     RickAndMortyApi.searchCharacters(format).then((data) => {
       if (data.results) {
-        setCharacters(data);
-        setNext(data.info.next);
+        setData(data);
       }
     });
   };
 
-  const handleNextPage = () => {
-    fetch(next)
-      .then((res) => res.json())
-      .then((data: CharactersResponse) => {
-        setCharacters((prevState) => ({
-          info: data.info,
-          results: [...prevState?.results || [], ...data.results]
-        }));
-        setNext(data.info.next)
-      });
-  };
-
   return (
     <div>
+      <Head>
+        <title>Search Characters</title>
+        <meta
+          name="description"
+          content="Search for serveral or a single character from the Rick an Morty serie"
+        />
+        <meta http-equiv="X-UA-Compatible" content="IE=7" />
+      </Head>
       <Container>
-        <div className="flex justify-center">
-          <form onSubmit={handleSubmit}>
-            <div className="md:w-96 space-y-5">
-              <Input
-                type="text"
-                name="name"
-                handleChange={handleChange}
-                label="Find by name"
-              />
-              <Select
-                name="status"
-                handleChange={handleChange}
-                id="status"
-                label="Choose an status"
-              >
-                <>
-                  <option value="">Choose a status</option>
-                  <option value="alive">Alive</option>
-                  <option value="dead">Dead</option>
-                  <option value="unknown">Unknown</option>
-                </>
-              </Select>
-              <Button type="submit">Search</Button>
-            </div>
-          </form>
+        <div className="flex justify-start">
+          <Link path="/">Home</Link>
         </div>
-        {characters && (
-          <div className="mt-6">
-            <div>
-              <h3>Count: {characters.info.count}</h3>
-              <h3>Pages: {characters.info.pages}</h3>
+        <div className="flex justify-center">
+          <SearchForm submitCallback={handleSubmit} />
+        </div>
+        {info && (
+          <div className="my-6">
+            <div className="space-x-3">
+              <Badges>Count: {info.count}</Badges>
+              <Badges>Pages: {info.pages}</Badges>
             </div>
           </div>
         )}
         <div className="mt-6">
-          {characters && characters.results ? (
-            <CharacterList characters={characters?.results} />
+          {characters ? (
+            <CharacterList characters={characters} />
           ) : null}
-          {next && (
+          {!isLoading && existNextPage ? (
             <div className="flex justify-center pt-10">
               <div className="w-max">
-                <Button onClick={handleNextPage}>Load more characters</Button>
+                <Button onClick={handleNextPage}>
+                  Load more characters
+                </Button>
               </div>
             </div>
-          )}
+          ) : null}
         </div>
       </Container>
     </div>

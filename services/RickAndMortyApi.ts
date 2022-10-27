@@ -35,9 +35,8 @@ class RickAndMortyApi {
     return data as CharactersResponse;
   }
 
-  async getCharactersFromPage(page: number = 1) {
-    const formattedUrl = `${this.apiUrl}/${this.charantersUri}?page=${page}`;
-    const response = await fetch(formattedUrl);
+  async getCharactersFromUrl(url: string) {
+    const response = await fetch(url);
     const data = await response.json();
 
     return data as CharactersResponse;
