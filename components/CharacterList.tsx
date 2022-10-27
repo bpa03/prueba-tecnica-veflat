@@ -8,7 +8,7 @@ interface CharacterListProps {
 
 const CharacterList: FC<CharacterListProps> = ({ characters }) => {
   return (
-    <ul className="space-y-10">
+    <ul className="gap-y-8 gap-x-10 w-full grid grid-cols-1 justify-center sm:grid-cols-2 md:grid-cols-3 xl:md:grid-cols-4">
       {characters.map((character) => (
         <CharacterItem character={character} key={character.id} />
       ))}

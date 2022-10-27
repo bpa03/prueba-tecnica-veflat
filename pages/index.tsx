@@ -4,6 +4,7 @@ import Head from 'next/head';
 import RickAndMortyApi from '../services/RickAndMortyApi';
 import { CharactersResponse } from '../services/interfaces';
 import CharacterList from '../components/CharacterList';
+import Container from '../components/ui/Container';
 
 interface HomePageProps {
   data: CharactersResponse;
@@ -33,15 +34,17 @@ const Home: NextPage<HomePageProps> = ({ data }) => {
       <Head>
         <title>Rick and Morty API</title>
       </Head>
-      <h1>Rick and Morty App</h1>
-      <div className="mt-6">
-        <CharacterList characters={characters} />
-        {!loading ? (
-          <button onClick={handleRefetch} className="mt-8">
-            Load more
-          </button>
-        ) : null}
-      </div>
+      <Container>
+        <h1>Rick and Morty App</h1>
+        <div className="mt-6">
+          <CharacterList characters={characters} />
+          {!loading ? (
+            <button onClick={handleRefetch} className="mt-8">
+              Load more
+            </button>
+          ) : null}
+        </div>
+      </Container>
     </>
   );
 };
