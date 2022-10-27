@@ -37,7 +37,7 @@ export default function usePagination() {
   return {
     setData,
     handleNextPage,
-    isLoading: loading,
+    loadingPage: loading,
     existNextPage: !!next.current,
     characters,
     info

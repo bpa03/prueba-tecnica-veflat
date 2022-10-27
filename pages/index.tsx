@@ -8,24 +8,20 @@ import Container from '../components/ui/Container';
 import usePagination from '../hooks/usePagination';
 import Button from '../components/ui/Button';
 import Link from '../components/ui/Link';
+import Spinner from '../components/ui/Spinner';
 
 interface HomePageProps {
   data: CharactersResponse;
 }
 
 const Home: NextPage<HomePageProps> = ({ data }) => {
-  const {
-    handleNextPage,
-    isLoading,
-    setData,
-    characters,
-    existNextPage,
-  } = usePagination();
+  const { handleNextPage, loadingPage, setData, characters, existNextPage } =
+    usePagination();
 
   useEffect(() => {
     setData(data);
   }, [data, setData]);
-  
+
   return (
     <>
       <Head>
@@ -33,7 +29,9 @@ const Home: NextPage<HomePageProps> = ({ data }) => {
       </Head>
       <Container>
         <div className="text-center mt-4 mb-6">
-          <h1 className="text-4xl font-extrabold">Rick and Morty App</h1>
+          <h1 className="text-4xl font-extrabold">
+            Rick and Morty App
+          </h1>
         </div>
         <div className="my-4 text-left">
           <Link path="/search">Search</Link>
@@ -42,15 +40,16 @@ const Home: NextPage<HomePageProps> = ({ data }) => {
           {characters ? (
             <CharacterList characters={characters} />
           ) : null}
-          {!isLoading && existNextPage ? (
-            <div className="flex justify-center pt-10">
+          <div className="flex justify-center pt-10">
+            {!loadingPage && existNextPage ? (
               <div className="w-max">
                 <Button onClick={handleNextPage}>
                   Load more characters
                 </Button>
               </div>
-            </div>
-          ) : null}
+            ) : null}
+            {loadingPage ? <Spinner /> : null}
+          </div>
         </div>
       </Container>
     </>

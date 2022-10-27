@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import CharacterList from '../components/CharacterList';
@@ -8,16 +9,18 @@ import usePagination from '../hooks/usePagination';
 import SearchForm from '../components/SearchForm';
 import Badges from '../components/ui/Badges';
 import Link from '../components/ui/Link';
+import Spinner from '../components/ui/Spinner';
 
 const Search: NextPage = () => {
   const {
     handleNextPage,
-    isLoading,
+    loadingPage,
     setData,
     characters,
     existNextPage,
     info,
   } = usePagination();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (values: { name: string; status: string }) => {
     let format = '';
@@ -35,8 +38,10 @@ const Search: NextPage = () => {
       return;
     }
 
+    setLoading(true);
     RickAndMortyApi.searchCharacters(format).then((data) => {
       if (data.results) {
+        setLoading(false);
         setData(data);
       }
     });
@@ -68,18 +73,24 @@ const Search: NextPage = () => {
           </div>
         )}
         <div className="mt-6">
+          {loading ? (
+            <div className="w-full flex justify-center py-20">
+              <Spinner />
+            </div>
+          ) : null}
           {characters ? (
             <CharacterList characters={characters} />
           ) : null}
-          {!isLoading && existNextPage ? (
-            <div className="flex justify-center pt-10">
+          <div className="flex justify-center pt-10">
+            {!loadingPage && existNextPage ? (
               <div className="w-max">
                 <Button onClick={handleNextPage}>
                   Load more characters
                 </Button>
               </div>
-            </div>
-          ) : null}
+            ) : null}
+            {loadingPage ? <Spinner /> : null}
+          </div>
         </div>
       </Container>
     </div>
