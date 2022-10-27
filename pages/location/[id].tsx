@@ -1,4 +1,5 @@
 import { NextPage } from 'next';
+import Head from 'next/head';
 import LocationScreen from '../../components/LocationScreen';
 import Container from '../../components/ui/Container';
 import Link from '../../components/ui/Link';
@@ -12,6 +13,10 @@ interface LocationPageProps {
 const Location: NextPage<LocationPageProps> = ({ data }) => {
   return (
     <Container>
+      <Head>
+        <title>{data.name}</title>
+        <meta name="description" content="Rick and Morty character details" />
+      </Head>
       <div className="text-left mt-2">
         <Link path='/'>Back to home</Link>
       </div>

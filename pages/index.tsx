@@ -26,6 +26,10 @@ const Home: NextPage<HomePageProps> = ({ data }) => {
     <>
       <Head>
         <title>Rick and Morty API</title>
+        <meta
+          name="description"
+          content="Detailed information on the characters of Rick and Morty"
+        />
       </Head>
       <Container>
         <div className="text-center mt-4 mb-6">
@@ -56,7 +60,7 @@ const Home: NextPage<HomePageProps> = ({ data }) => {
   );
 };
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const data = await RickAndMortyApi.getAllCharacters();
   return {
     props: {
