@@ -3,12 +3,10 @@ import { CharactersResponse, LocationResponse } from './interfaces';
 class RickAndMortyApi {
   declare apiUrl: string;
   declare charantersUri: string;
-  declare locationUri: string;
 
   constructor() {
     this.apiUrl = 'https://rickandmortyapi.com/api';
     this.charantersUri = 'character';
-    this.locationUri = 'location';
   }
 
   async getAllCharacters(): Promise<CharactersResponse> {
@@ -19,8 +17,8 @@ class RickAndMortyApi {
     return data as CharactersResponse;
   }
 
-  async getLocationById(id: string | number) {
-    const formattedUrl = `${this.apiUrl}/${this.locationUri}/${id}`;
+  async getCharacterById(id: string | number) {
+    const formattedUrl = `${this.apiUrl}/${this.charantersUri}/${id}`;
     const response = await fetch(formattedUrl);
     const data = await response.json();
 

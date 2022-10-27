@@ -1,19 +1,25 @@
 import { NextPage } from 'next';
-import { LocationResponse } from '../../services/interfaces';
+import LocationScreen from '../../components/LocationScreen';
+import Container from '../../components/ui/Container';
+import Link from '../../components/ui/Link';
+import { Character } from '../../services/interfaces';
 import RickAndMortyApi from '../../services/RickAndMortyApi';
 
 interface LocationPageProps {
-  data: LocationResponse;
+  data: Character;
 }
 
-const Location: NextPage<LocationPageProps> = ({
-  data: { name, dimension },
-}) => {
+const Location: NextPage<LocationPageProps> = ({ data }) => {
   return (
-    <div>
-      <h1>{name}</h1>
-      <h1>{dimension}</h1>
-    </div>
+    <Container>
+      <div className="text-left mt-2">
+        <Link path='/'>Back to home</Link>
+      </div>
+      <div className="text-center mt-4 mb-6">
+        <h1 className="text-4xl font-extrabold">{data.name}</h1>
+      </div>
+      <LocationScreen character={data} />
+    </Container>
   );
 };
 
@@ -22,10 +28,10 @@ export async function getServerSideProps(ctx: {
 }) {
   const { query } = ctx;
   const { id } = query;
-  const location = await RickAndMortyApi.getLocationById(id);
+  const character = await RickAndMortyApi.getCharacterById(id);
 
   return {
-    props: { data: location },
+    props: { data: character },
   };
 }
 
