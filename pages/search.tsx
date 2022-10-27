@@ -44,6 +44,8 @@ const Search: NextPage = () => {
         setLoading(false);
         setData(data);
       }
+
+      setLoading(false);
     });
   };
 
